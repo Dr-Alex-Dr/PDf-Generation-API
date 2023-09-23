@@ -1,0 +1,15 @@
+{
+ "type": "module",
+ "dependencies": {
+  "@google-cloud/local-auth": "^2.1.0",
+  "@googleapis/docs": "^2.0.5",
+  "axios": "^1.5.0",
+  "express": "^4.18.2",
+  "googleapis": "^105.0.0",
+  "pdf-parse": "^1.1.1",
+  "pdfjs-dist": "^3.10.111",
+  "pdfkit": "^0.13.0",
+  "pdfreader": "^3.0.2",
+  "telegraf": "^4.13.1"
+ }
+}
