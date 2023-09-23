@@ -37,7 +37,9 @@ async function mixerHashtags(url, fileName) {
     try {
         await downloadFile(url, `./Files/${fileName}.pdf`);
         let data = await readPdf(`./Files/${fileName}.pdf`);
-        shuffleArray(data)
+        deleteFile(`./Files/${fileName}.pdf`);
+        
+        shuffleArray(data);
 
         for(let word of data) {
             filterHashtagsLanguage(word)
@@ -62,7 +64,6 @@ async function mixerHashtags(url, fileName) {
         console.error(error);
         throw error;
     }
- 
 }
 
 function filterHashtagsLanguage(hashtag) {
