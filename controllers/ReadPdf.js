@@ -5,11 +5,6 @@ import { createPdf } from "./CreatePdf.js";
 import { uploadFile } from "./UploadFile.js";
 import { deleteFile } from "./DeleteFile.js";
 
-const englishHashtags = []
-const russiansHashtags = []
-
-const forbiddenWords = ['война', 'сво', 'украина', 'украин']
-
 async function downloadFile(url, localPath) { 
     try {
         const response = await axios.get(url, { responseType: 'arraybuffer' });
@@ -34,25 +29,31 @@ async function readPdf(filePath) {
 
 
 async function mixerHashtags(url, fileName) {
+    const englishHashtags = []
+    const russiansHashtags = []
+
     try {
         await downloadFile(url, `./Files/${fileName}.pdf`);
         let data = await readPdf(`./Files/${fileName}.pdf`);
         deleteFile(`./Files/${fileName}.pdf`);
-        
+
         shuffleArray(data);
 
         for(let word of data) {
-            filterHashtagsLanguage(word)
+            if (/^#[а-яА-Я0-9_]+$/.test(word)) {
+                russiansHashtags.push(word);
+            }
+            if (/^#[a-zA-Z0-9_]+$/.test(word)) {
+                englishHashtags.push(word);
+            }
         }
         
-        let allHashtags = [...russiansHashtags, ...englishHashtags];
-
-        if (allHashtags.length === 0) {
+        if (russiansHashtags.length === 0 || englishHashtags.length === 0) {
             deleteFile(`./Files/${fileName}.pdf`);
             return 'Ой, Кажется что-то пошло не так';
         }
         
-        await createPdf(allHashtags, `./Files/${fileName}.pdf`);
+        await createPdf(russiansHashtags, englishHashtags, `./Files/${fileName}.pdf`);
 
         const linkFileGoogleDrive = await uploadFile(`${fileName}.pdf`, `./Files/${fileName}.pdf`);
 
@@ -64,34 +65,6 @@ async function mixerHashtags(url, fileName) {
         console.error(error);
         throw error;
     }
-}
-
-function filterHashtagsLanguage(hashtag) {
-    if (/^#[а-яА-Я0-9_]+$/.test(hashtag)) {
-        russiansHashtags.push(hashtag);
-    }
-    if (/^#[a-zA-Z0-9_]+$/.test(hashtag)) {
-        englishHashtags.push(hashtag);
-    }
-}
-
-function filterHashtagsLength(array) {
-    let quantityEachElement = array.reduce((stack, value) => {
-        return stack[value] ? stack[value]++ : stack[value] = 1, stack;
-    }, {});
-  
-    return Object.keys(quantityEachElement).filter(num => quantityEachElement[num] > 9);
-}
-
-function filterHashtagsForbiddenWords(hashtag) {
-    let word = hashtag.split('#')[1];
-    
-    for (let item of forbiddenWords) {
-        if (item.toLowerCase() === word || word.indexOf(item) !== -1) {
-            return false;
-        }
-    }
-    return true;
 }
 
 function shuffleArray(array) {

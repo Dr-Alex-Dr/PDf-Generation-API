@@ -2,7 +2,9 @@ import { createWriteStream } from 'node:fs';
 import PDFDocument from 'pdfkit';
 
 
-async function createPdf(words, filePath) {
+async function createPdf(russiansHashtags, englishHashtags, filePath) {
+    const words = [...russiansHashtags, ...englishHashtags]
+
     const doc = new PDFDocument();
 
     doc.pipe(createWriteStream(filePath));
@@ -21,15 +23,32 @@ async function createPdf(words, filePath) {
     for (let page = 0; page < countPages; page++) {
         for (let row = 0; row < 2; row++) {
             for (let column = 0; column < 3; column++) {
-                for (let i = index; i < words.length + 1; i++) {             
-                    doc
+                for (let i = index; i < words.length + 2; i++) {
+
+                    let differenceIndex = words.indexOf(englishHashtags[0]) - index;
+                    if (Math.sign(differenceIndex) === 1 && differenceIndex < 30) {
+                        index = words.indexOf(englishHashtags[0]);
+                        i = index;
+                        initialStep = 0;       
+                    }
+
+                    if (words.length + 2 - index < 30) {
+                        return new Promise((resolve, reject) => { 
+                            doc.end();
+                            setTimeout(() => {
+                                resolve()
+                            }, 3000)       
+                        })
+                    }
+
+                    doc 
                     .fontSize(8)
                     .font('./Fonts/Roboto-Regular.ttf')
                     .text(words[i], (x + (column * indentBetweenColumns)), y + (initialStep * lineHeight) + row * (countWordInColumn * lineHeight + 20))
                     
-                    initialStep++;
+                    initialStep++;   
                     if (initialStep === countWordInColumn) {
-                        index = i;
+                        index = i + 1;
                         initialStep = 0;
                         break;
                     }
@@ -49,8 +68,6 @@ async function createPdf(words, filePath) {
     }
 }
 
-// await createPdf('https://files.salebot.pro//uploads//message_files//7027f254-f565-409e-84e6-94588a5fbff3.txt', 'test.pdf')
-// console.log('end')
 
 export { createPdf }
 

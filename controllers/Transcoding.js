@@ -4,10 +4,7 @@ import { createPdf } from "./CreatePdf.js";
 import { uploadFile } from "./UploadFile.js";
 import { deleteFile } from "./DeleteFile.js";
 
-const englishHashtags = []
-const russiansHashtags = []
-
-const forbiddenWords = ['война', 'сво', 'украина', 'украин']
+const forbiddenWords = ['война', 'сво', 'украина', 'украин', 'ukraine', 'конкурс', 'игил']
 
 async function downloadFile(url, localPath) { 
     try {
@@ -16,7 +13,6 @@ async function downloadFile(url, localPath) {
     }
     catch(error) {
         console.error(error);
-        throw error;
     }
 }
 
@@ -26,14 +22,17 @@ async function readFile(localPath) {
       return data;
     } catch (error) {
       console.error(error);
-      throw error;
     }
 }
 
 async function parseHashtags(url, fileName) {
+    const englishHashtags = []
+    const russiansHashtags = []
+
     try {
         await downloadFile(url, `./Files/${fileName}.txt`);
         let data = await readFile(`./Files/${fileName}.txt`);
+
         let lines = data.split('\n');
 
         for (let line of lines) {
@@ -42,26 +41,29 @@ async function parseHashtags(url, fileName) {
             if (arrayWordsInLine) {
                 for (let word of arrayWordsInLine ) {
                     if (filterHashtagsForbiddenWords(word)) {
-                        filterHashtagsLanguage(word)
+                        if (/^#[а-яА-Я0-9_]+$/.test(word)) {
+                            russiansHashtags.push(word);
+                        }
+                        if (/^#[a-zA-Z0-9_]+$/.test(word)) {
+                            englishHashtags.push(word)
+                        }
                     }   
                 }
             }   
         }
-        
+
         const filteredRussianHashtags  = filterHashtagsLength(russiansHashtags);
         const filteredEnglishHashtags  = filterHashtagsLength(englishHashtags);
 
         shuffleArray(filteredRussianHashtags);     
         shuffleArray(filteredEnglishHashtags);
 
-        let allHashtags = [...filteredRussianHashtags, ...filteredEnglishHashtags];
-
-        if (allHashtags.length === 0) {
+        if (filteredRussianHashtags.length === 0 || filteredEnglishHashtags.length === 0) {
             deleteFile(`./Files/${fileName}.txt`);
             return 'В файле отсутствуют подходящие хэштеги';
         }
         
-        await createPdf(allHashtags, `./Files/${fileName}.pdf`);
+        await createPdf(filteredRussianHashtags, filteredEnglishHashtags, `./Files/${fileName}.pdf`);
 
         const linkFileGoogleDrive = await uploadFile(`${fileName}.pdf`, `./Files/${fileName}.pdf`);
 
@@ -72,18 +74,9 @@ async function parseHashtags(url, fileName) {
     }
     catch(error) {
         console.error(error);
-        throw error;
+      
     }
  
-}
-
-function filterHashtagsLanguage(hashtag) {
-    if (/^#[а-яА-Я0-9_]+$/.test(hashtag)) {
-        russiansHashtags.push(hashtag);
-    }
-    if (/^#[a-zA-Z0-9_]+$/.test(hashtag)) {
-        englishHashtags.push(hashtag);
-    }
 }
 
 function filterHashtagsLength(array) {
