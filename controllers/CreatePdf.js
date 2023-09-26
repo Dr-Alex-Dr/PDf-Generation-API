@@ -13,7 +13,7 @@ async function createPdf(russiansHashtags, englishHashtags, filePath) {
     const indentBetweenColumns = 170;
     const lineHeight = 11;
 
-    const x = 80;
+    const x = 60;
     const y = 40;
 
     let index = 0;
