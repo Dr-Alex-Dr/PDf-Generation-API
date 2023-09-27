@@ -11,19 +11,27 @@ app.use(express.json());
 app.post('/api/transcoding', async (req, res) => {
     const { urlFile } = req.body;
 
-    let gooleDiriveFileLink = await parseHashtags(urlFile, Math.floor(Math.random() * 100000))
+    if (urlFile) {
+        let gooleDiriveFileLink = await parseHashtags(urlFile, Math.floor(Math.random() * 100000))
     
-    console.log(gooleDiriveFileLink)
-    res.json({ urlFile: gooleDiriveFileLink });
+        console.log(gooleDiriveFileLink)
+        res.json({ urlFile: gooleDiriveFileLink });
+    } else {
+        res.json({ urlFile: 'Невозможно обработать файл. Пожалуйста, проверьте его размер' });
+    }
 });
 
 app.post('/api/mixer', async (req, res) => {
     const { urlFile } = req.body;
 
-    let gooleDiriveFileLink = await mixerHashtags(urlFile, Math.floor(Math.random() * 100000))
+    if (urlFile) {
+        let gooleDiriveFileLink = await mixerHashtags(urlFile, Math.floor(Math.random() * 100000))
     
-    console.log(gooleDiriveFileLink)
-    res.json({ urlFile: gooleDiriveFileLink });
+        console.log(gooleDiriveFileLink)
+        res.json({ urlFile: gooleDiriveFileLink });
+    } else {
+        res.json({ urlFile: 'Невозможно обработать файл. Пожалуйста, проверьте его размер' });
+    }
 });
   
 app.listen(port, "localhost", () => {

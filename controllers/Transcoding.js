@@ -25,6 +25,7 @@ async function readFile(localPath) {
     }
 }
 
+
 async function parseHashtags(url, fileName) {
     const englishHashtags = []
     const russiansHashtags = []

@@ -50,7 +50,7 @@ async function mixerHashtags(url, fileName) {
         
         if (russiansHashtags.length === 0 || englishHashtags.length === 0) {
             deleteFile(`./Files/${fileName}.pdf`);
-            return 'Ой, Кажется что-то пошло не так';
+            return 'Похоже, в вашем файле отсутствуют хештеги для перемешивания';
         }
         
         await createPdf(russiansHashtags, englishHashtags, `./Files/${fileName}.pdf`);

@@ -5,6 +5,7 @@
 /credentials.json
 credentials.json
 /node_modules
+/Tests
 /.pnp
 .pnp.js
 
