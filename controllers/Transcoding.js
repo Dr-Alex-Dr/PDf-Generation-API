@@ -4,7 +4,7 @@ import { createPdf } from "./CreatePdf.js";
 import { uploadFile } from "./UploadFile.js";
 import { deleteFile } from "./DeleteFile.js";
 
-const forbiddenWords = ['война', 'сво', 'украина', 'украин', 'ukraine', 'конкурс', 'игил']
+const forbiddenWords = ['война', 'сво', 'украина', 'украин', 'ukraine', 'конкурс', 'игил', 'порно']
 
 async function downloadFile(url, localPath) { 
     try {
@@ -61,8 +61,12 @@ async function parseHashtags(url, fileName) {
 
         if (filteredRussianHashtags.length === 0 || filteredEnglishHashtags.length === 0) {
             deleteFile(`./Files/${fileName}.txt`);
-            return 'В файле отсутствуют подходящие хэштеги';
+            return {
+                fileUrl: false,
+                error: 'В файле отсутствуют подходящие хэштеги'
+            }
         }
+
         
         await createPdf(filteredRussianHashtags, filteredEnglishHashtags, `./Files/${fileName}.pdf`);
 
@@ -71,7 +75,10 @@ async function parseHashtags(url, fileName) {
         deleteFile(`./Files/${fileName}.pdf`);
         deleteFile(`./Files/${fileName}.txt`);
 
-        return linkFileGoogleDrive;
+        return {
+            fileUrl: linkFileGoogleDrive,
+            error: false
+        }
     }
     catch(error) {
         console.error(error);
@@ -105,6 +112,7 @@ function shuffleArray(array) {
       [array[i], array[j]] = [array[j], array[i]];
     }
 }
+
 
 export { parseHashtags }
 

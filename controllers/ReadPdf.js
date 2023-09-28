@@ -50,7 +50,10 @@ async function mixerHashtags(url, fileName) {
         
         if (russiansHashtags.length === 0 || englishHashtags.length === 0) {
             deleteFile(`./Files/${fileName}.pdf`);
-            return 'Похоже, в вашем файле отсутствуют хештеги для перемешивания';
+            return {
+                fileUrl: false,
+                error: 'Похоже, в вашем файле отсутствуют хештеги для перемешивания'
+            }
         }
         
         await createPdf(russiansHashtags, englishHashtags, `./Files/${fileName}.pdf`);
@@ -59,7 +62,11 @@ async function mixerHashtags(url, fileName) {
 
         deleteFile(`./Files/${fileName}.pdf`);
 
-        return linkFileGoogleDrive;
+
+        return {
+            fileUrl: linkFileGoogleDrive,
+            error: false
+        }
     }
     catch(error) {
         console.error(error);

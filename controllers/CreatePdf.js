@@ -1,7 +1,6 @@
 import { createWriteStream } from 'node:fs';
 import PDFDocument from 'pdfkit';
 
-
 async function createPdf(russiansHashtags, englishHashtags, filePath) {
     const words = [...russiansHashtags, ...englishHashtags]
 
@@ -26,19 +25,22 @@ async function createPdf(russiansHashtags, englishHashtags, filePath) {
                 for (let i = index; i < words.length + 2; i++) {
 
                     let differenceIndex = words.indexOf(englishHashtags[0]) - index;
-                    if (Math.sign(differenceIndex) === 1 && differenceIndex < 30) {
-                        index = words.indexOf(englishHashtags[0]);
-                        i = index;
-                        initialStep = 0;       
-                    }
-
-                    if (words.length + 2 - index < 30) {
-                        return new Promise((resolve, reject) => { 
-                            doc.end();
-                            setTimeout(() => {
-                                resolve()
-                            }, 3000)       
-                        })
+                    
+                    if (russiansHashtags.length >= 30) {
+                        if (Math.sign(differenceIndex) === 1 && differenceIndex < 30) {
+                            index = words.indexOf(englishHashtags[0]);
+                            i = index;
+                            initialStep = 0;       
+                        }
+    
+                        if (words.length + 2 - index < 30) {
+                            return new Promise((resolve, reject) => { 
+                                doc.end();
+                                setTimeout(() => {
+                                    resolve()
+                                }, 3000)       
+                            })
+                        }
                     }
 
                     doc 
@@ -51,6 +53,13 @@ async function createPdf(russiansHashtags, englishHashtags, filePath) {
                         index = i + 1;
                         initialStep = 0;
                         break;
+                    }
+                    if (russiansHashtags.length < 30) {
+                        if (initialStep === differenceIndex) {
+                            index = i + 1;
+                            initialStep = 0;
+                            break;
+                        } 
                     }
 
                     if (i === words.length) {
