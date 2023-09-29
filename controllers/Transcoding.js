@@ -37,7 +37,7 @@ async function parseHashtags(url, fileName) {
         let lines = data.split('\n');
 
         for (let line of lines) {
-            let arrayWordsInLine = line.match(/#[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9_]+(?=\s|$)/g);
+            let arrayWordsInLine = line.match(/#(?:\w|[\u0400-\u04FF])+/g);
 
             if (arrayWordsInLine) {
                 for (let word of arrayWordsInLine ) {
