@@ -4,7 +4,7 @@ import { createPdf } from "./CreatePdf.js";
 import { uploadFile } from "./UploadFile.js";
 import { deleteFile } from "./DeleteFile.js";
 
-const forbiddenWords = ['война', 'сво', 'украина', 'украин', 'ukraine', 'конкурс', 'игил', 'порно']
+const forbiddenWords = ['война', 'сво', 'украина', 'украин', 'ukraine', 'конкурс', 'игил', 'порно', 'секс']
 
 async function downloadFile(url, localPath) { 
     try {

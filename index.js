@@ -14,6 +14,7 @@ app.post('/api/transcoding', async (req, res) => {
 
     if (urlFile) {
         let gooleDiriveFileLink = await parseHashtags(urlFile, Math.floor(Math.random() * 100000))
+        console.log(gooleDiriveFileLink)
         res.json(gooleDiriveFileLink);    
     } else {
         res.json( {
