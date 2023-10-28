@@ -45,7 +45,7 @@ async function parseHashtags(url, fileName) {
                         if (/^#[а-яА-Я0-9_]+$/.test(word)) {
                             russiansHashtags.push(word);
                         }
-                        if (/^#[a-zA-Z0-9_]+$/.test(word)) {
+                        if (/^#[a-zA-Z0-9_äöüß]+$/.test(word)) {
                             englishHashtags.push(word)
                         }
                     }   
