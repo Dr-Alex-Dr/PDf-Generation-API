@@ -11,6 +11,6 @@
   "pdfjs-dist": "^3.10.111",
   "pdfkit": "^0.13.0",
   "pdfreader": "^3.0.2",
-  "telegraf": "^4.13.1"
+  "telegraf": "^4.15.3"
  }
 }
