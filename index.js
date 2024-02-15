@@ -1,10 +1,12 @@
 import express from "express";
 import { parseHashtags } from "./controllers/Transcoding.js";
 import { mixerHashtags } from "./controllers/ReadPdf.js";
-import { authentication } from "./controllers/Authentication.js"
+import { authentication } from "./controllers/Authentication.js";
+import { pool } from './db.js';
 
 const app = express();
 const port = 3000;
+const conn = pool.promise();
 
 app.use(express.json());
 
