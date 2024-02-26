@@ -6,7 +6,7 @@ export let creteSumBtn = {
     },
   }
 
-export function dowsloadFileButton(url) {
+export function downloadFileButton(url) {
     return {
         reply_markup: {
         inline_keyboard: [
